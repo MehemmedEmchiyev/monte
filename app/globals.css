@@ -1,26 +1,128 @@
 @import "tailwindcss";
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+@import "swiper/css/effect-fade";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0f5ff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --primary: #0000ff;
+  --primary-foreground: #ffffff;
+  --secondary: #ff6600;
+  --secondary-foreground: #ffffff;
+  --muted: #e8eeff;
+  --muted-foreground: #64748b;
+  --accent: #fff4eb;
+  --accent-foreground: #0f172a;
+  --border: #c7d2fe;
+  --ring: #0000ff;
+  --beige: #eff6ff;
+  --light-gray: #f1f5f9;
+  --blue-light: #dbeafe;
+  --blue-section: #eff6ff;
+}
+
+.dark {
+  --background: #0c1222;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --primary: #3333ff;
+  --primary-foreground: #ffffff;
+  --secondary: #ff6600;
+  --secondary-foreground: #ffffff;
+  --muted: #1e3a5f;
+  --muted-foreground: #94a3b8;
+  --accent: #431407;
+  --accent-foreground: #f1f5f9;
+  --border: #1e3a5f;
+  --ring: #3333ff;
+  --beige: #0f1d32;
+  --light-gray: #1e293b;
+  --blue-light: #1e3a5f;
+  --blue-section: #0f1d32;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-beige: var(--beige);
+  --color-light-gray: var(--light-gray);
+  --color-blue-light: var(--blue-light);
+  --color-blue-section: var(--blue-section);
+  --font-sans: var(--font-nunito);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1 !important;
+  width: 10px !important;
+  height: 10px !important;
+  transition: all 0.3s ease !important;
+}
+.swiper-pagination-bullet-active {
+  background: #0000ff !important;
+  width: 32px !important;
+  border-radius: 5px !important;
+}
+
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.hero-swiper .swiper-button-next:hover,
+.hero-swiper .swiper-button-prev:hover {
+  background: rgba(0, 0, 255, 0.8);
+}
+.hero-swiper .swiper-button-next::after,
+.hero-swiper .swiper-button-prev::after {
+  font-size: 18px !important;
+  font-weight: bold;
 }
