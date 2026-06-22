@@ -27,7 +27,7 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
                 className={`h-5 w-5 ${
                   i < review.rating
                     ? "text-secondary fill-secondary"
-                    : "text-muted"
+                    : "text-muted-foreground/30"
                 }`}
               />
             ))}

@@ -300,7 +300,7 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortOption)}
-                  className="h-11 rounded-xl border border-border bg-card px-4 text-sm font-medium cursor-pointer"
+                  className="h-11 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground cursor-pointer"
                 >
                   {sortOptions.map((opt) => (
                     <option key={opt} value={opt}>

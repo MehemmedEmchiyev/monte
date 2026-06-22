@@ -28,7 +28,7 @@ function StarRating({ rating }: { rating: number }) {
             "h-3.5 w-3.5",
             i < Math.round(rating)
               ? "text-secondary fill-secondary"
-              : "text-muted"
+              : "text-muted-foreground/30"
           )}
         />
       ))}
@@ -207,7 +207,7 @@ export function ProductCard({
                       "flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all cursor-pointer",
                       wished
                         ? "bg-secondary text-white"
-                        : "bg-white text-foreground hover:bg-secondary hover:text-white"
+                        : "bg-card text-card-foreground hover:bg-secondary hover:text-white"
                     )}
                     aria-label="Wishlist"
                   >
@@ -217,7 +217,7 @@ export function ProductCard({
                   </button>
                   <button
                     onClick={handleQuickView}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-foreground shadow-lg hover:bg-primary hover:text-white transition-all cursor-pointer"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-card-foreground shadow-lg hover:bg-primary hover:text-white transition-all cursor-pointer"
                     aria-label="Quick view"
                   >
                     <HiEye className="h-5 w-5" />

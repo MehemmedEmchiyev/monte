@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useWishlist } from "@/hooks/useWishlist";
 import {
   HiBars3,
@@ -120,7 +121,7 @@ export function Navbar() {
           }}
           transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
           className={cn(
-            "bg-white/95 backdrop-blur-xl border border-primary/15 mx-auto",
+            "bg-card/95 backdrop-blur-xl border border-primary/15 mx-auto",
             scrolled ? "border-primary/20" : "border-b border-primary/10"
           )}
         >
@@ -161,7 +162,7 @@ export function Navbar() {
                           initial={{ opacity: 0, y: -8, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                          className="absolute top-full left-0 mt-2 flex gap-1 rounded-xl bg-white border border-border shadow-xl p-2"
+                          className="absolute top-full left-0 mt-2 flex gap-1 rounded-xl bg-card border border-border shadow-xl p-2"
                         >
                           <SocialIcons compact />
                         </motion.div>
@@ -223,7 +224,7 @@ export function Navbar() {
               </div>
             </div>
 
-            {/* RIGHT: Wishlist + Language */}
+            {/* RIGHT: Wishlist + Theme + Language */}
             <div className="flex items-center gap-1 md:gap-2 min-w-[100px] md:min-w-[140px] justify-end">
               <Link
                 href="/wishlist"
@@ -244,6 +245,7 @@ export function Navbar() {
                   )}
                 </AnimatePresence>
               </Link>
+              <ThemeToggle />
               <LanguageSwitcher />
             </div>
           </div>
@@ -260,7 +262,7 @@ export function Navbar() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed inset-x-0 top-[72px] z-40 bg-white/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden"
+            className="fixed inset-x-0 top-[72px] z-40 bg-card/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden"
           >
             <div className="px-4 py-4 space-y-1 max-h-[70vh] overflow-y-auto">
               {allLinks.map((link) => (
@@ -280,6 +282,7 @@ export function Navbar() {
               ))}
               <div className="flex items-center gap-3 px-4 py-3 border-t border-border mt-2">
                 <SocialIcons />
+                <ThemeToggle />
               </div>
               <Link
                 href="/wishlist"

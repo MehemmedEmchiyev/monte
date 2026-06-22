@@ -105,7 +105,7 @@ export default function ProductDetail({
                       className={`h-5 w-5 ${
                         i < Math.round(product.rating)
                           ? "text-secondary fill-secondary"
-                          : "text-muted"
+                          : "text-muted-foreground/30"
                       }`}
                     />
                   ))}

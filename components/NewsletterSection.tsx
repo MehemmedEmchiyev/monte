@@ -47,7 +47,7 @@ export function NewsletterSection() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="bg-white/95 border-0 flex-1"
+            className="bg-white border-0 flex-1 text-slate-900 placeholder:text-slate-500 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
           />
           <Button type="submit" variant="secondary" size="lg">
             {t("subscribe")}
