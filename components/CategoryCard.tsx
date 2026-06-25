@@ -18,7 +18,13 @@ export function CategoryCard({ category, index = 0 }: CategoryCardProps) {
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
     >
-      <Link href={`/products?skill=${category.slug}`}>
+      <Link
+        href={
+          category.slug === "eco-friendly"
+            ? "/products?material=eco-friendly"
+            : `/products?skill=${category.slug}`
+        }
+      >
         <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
           <Image
             src={category.image}

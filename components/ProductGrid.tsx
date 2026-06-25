@@ -2,8 +2,6 @@
 
 import { Product } from "@/types";
 import { ProductCard } from "@/components/ProductCard";
-import { StaggerContainer, staggerItem } from "@/components/AnimatedSection";
-import { motion } from "framer-motion";
 
 interface ProductGridProps {
   products: Product[];
@@ -13,23 +11,21 @@ interface ProductGridProps {
 export function ProductGrid({ products, view = "grid" }: ProductGridProps) {
   if (view === "list") {
     return (
-      <StaggerContainer className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {products.map((product, i) => (
-          <motion.div key={product.id} variants={staggerItem}>
-            <ProductCard product={product} view="list" index={i} />
-          </motion.div>
+          <ProductCard key={product.id} product={product} view="list" index={i} />
         ))}
-      </StaggerContainer>
+      </div>
     );
   }
 
   return (
-    <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
       {products.map((product, i) => (
-        <motion.div key={product.id} variants={staggerItem} className="h-full">
+        <div key={product.id} className="h-full">
           <ProductCard product={product} index={i} />
-        </motion.div>
+        </div>
       ))}
-    </StaggerContainer>
+    </div>
   );
 }

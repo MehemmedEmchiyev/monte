@@ -15,7 +15,8 @@
     "career": "Karyera",
     "partners": "Tərəfdaşlar",
     "horeca": "HoReCa",
-    "wishlist": "Seçilmişlər"
+    "wishlist": "Seçilmişlər",
+    "theme": "Tema"
   },
   "hero": {
     "slide1Title": "Öyrənmə Sevincini Kəşf Edin",
@@ -116,7 +117,16 @@
     "material": "Material",
     "rating": "Reytinq",
     "reviews": "rəy",
-    "off": "endirim"
+    "off": "endirim",
+    "orderNow": "Sifariş et",
+    "whatsappIntro": "Salam! Bu məhsulu sifariş etmək istəyirəm:",
+    "whatsappProduct": "Məhsul",
+    "whatsappPrice": "Qiymət",
+    "whatsappOriginalPrice": "Köhnə qiymət",
+    "whatsappDescription": "Təsvir",
+    "whatsappAge": "Yaş",
+    "whatsappSkill": "Bacarıq",
+    "whatsappMaterial": "Material"
   },
   "boys": {
     "title": "Oğlanlar Kolleksiyası",
@@ -184,6 +194,7 @@
     "message": "Mesaj",
     "messagePlaceholder": "Mesajınızı yazın...",
     "send": "Göndər",
+    "whatsappIntro": "Salam! Saytınızdan yazıram:",
     "success": "Mesajınız uğurla göndərildi! Tezliklə sizinlə əlaqə saxlayacağıq.",
     "map": "Xəritə"
   },

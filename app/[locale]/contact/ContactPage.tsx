@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { buildWhatsAppOrderUrl } from "@/lib/utils";
 import {
   HiMapPin,
   HiPhone,
@@ -20,17 +21,21 @@ export default function ContactPage() {
   const t = useTranslations("contact");
   const [form, setForm] = useState({
     name: "",
-    email: "",
-    phone: "",
     message: "",
   });
-  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setForm({ name: "", email: "", phone: "", message: "" });
-    setTimeout(() => setSubmitted(false), 5000);
+
+    const whatsappMessage = [
+      t("whatsappIntro"),
+      "",
+      `${t("name")}: ${form.name.trim()}`,
+      `${t("message")}: ${form.message.trim()}`,
+    ].join("\n");
+
+    window.open(buildWhatsAppOrderUrl(whatsappMessage), "_blank", "noopener,noreferrer");
+    setForm({ name: "", message: "" });
   };
 
   const contactItems = [
@@ -79,7 +84,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <Card className="shadow-lg">
+          <Card className="shadow-lg h-max self-start w-full">
             <CardContent className="p-8">
               <h2 className="text-xl font-extrabold mb-6">{t("form")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -98,33 +103,6 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label className="text-sm font-semibold mb-1.5 block">
-                    {t("email")}
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder={t("emailPlaceholder")}
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold mb-1.5 block">
-                    {t("phone")}
-                  </label>
-                  <Input
-                    type="tel"
-                    placeholder={t("phonePlaceholder")}
-                    value={form.phone}
-                    onChange={(e) =>
-                      setForm({ ...form, phone: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold mb-1.5 block">
                     {t("message")}
                   </label>
                   <Textarea
@@ -134,20 +112,17 @@ export default function ContactPage() {
                       setForm({ ...form, message: e.target.value })
                     }
                     required
+                    rows={5}
                   />
                 </div>
-                <Button type="submit" size="lg" className="w-full" variant="secondary">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full"
+                  variant="secondary"
+                >
                   {t("send")}
                 </Button>
-                {submitted && (
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center text-green-600 font-semibold text-sm"
-                  >
-                    ✓ {t("success")}
-                  </motion.p>
-                )}
               </form>
             </CardContent>
           </Card>

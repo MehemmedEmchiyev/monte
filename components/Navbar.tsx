@@ -125,9 +125,8 @@ export function Navbar() {
             scrolled ? "border-primary/20" : "border-b border-primary/10"
           )}
         >
-          <div className="mx-auto flex h-16 md:h-[72px] max-w-[1400px] items-center justify-between px-5 md:px-8 lg:px-10 transition-all duration-350">
-            {/* LEFT: Social or collapsed link button */}
-            <div className="flex items-center gap-2 min-w-[100px] md:min-w-[140px]">
+          <div className="mx-auto grid h-16 max-w-[1400px] grid-cols-3 items-center px-4 md:flex md:h-[72px] md:justify-between md:px-8 lg:px-10 transition-all duration-350">
+            <div className="flex items-center gap-2 md:min-w-[140px]">
               <AnimatePresence mode="wait">
                 {!scrolled ? (
                   <motion.div
@@ -172,7 +171,6 @@ export function Navbar() {
                 )}
               </AnimatePresence>
 
-              {/* Mobile menu button */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted transition-colors cursor-pointer"
@@ -186,9 +184,7 @@ export function Navbar() {
               </button>
             </div>
 
-            {/* CENTER: Navigation + Logo */}
-            <div className="flex items-center gap-1 md:gap-2 lg:gap-4 flex-1 justify-center">
-              {/* Left nav links - desktop */}
+            <div className="flex items-center justify-center gap-1 md:gap-2 lg:gap-4 md:flex-1 md:justify-center">
               <div className="hidden lg:flex items-center gap-1">
                 {leftLinks.map((link) => (
                   <NavLink
@@ -199,8 +195,7 @@ export function Navbar() {
                 ))}
               </div>
 
-              {/* Logo - always centered */}
-              <Link href="/" className="shrink-0 mx-2 md:mx-4">
+              <Link href="/" className="shrink-0 md:mx-4">
                 <div className="flex items-center gap-2">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-lg text-white font-extrabold shadow-md">
                     M
@@ -212,7 +207,6 @@ export function Navbar() {
                 </div>
               </Link>
 
-              {/* Right nav links - desktop */}
               <div className="hidden lg:flex items-center gap-1">
                 {rightLinks.map((link) => (
                   <NavLink
@@ -224,11 +218,10 @@ export function Navbar() {
               </div>
             </div>
 
-            {/* RIGHT: Wishlist + Theme + Language */}
-            <div className="flex items-center gap-1 md:gap-2 min-w-[100px] md:min-w-[140px] justify-end">
+            <div className="flex items-center justify-end gap-1 md:gap-2 md:min-w-[140px]">
               <Link
                 href="/wishlist"
-                className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary/10 text-foreground/70 hover:text-secondary transition-all"
+                className="relative hidden md:flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary/10 text-foreground/70 hover:text-secondary transition-all"
                 aria-label="Wishlist"
               >
                 <HiHeart className="h-5 w-5" />
@@ -245,7 +238,9 @@ export function Navbar() {
                   )}
                 </AnimatePresence>
               </Link>
-              <ThemeToggle />
+              <div className="hidden md:block">
+                <ThemeToggle />
+              </div>
               <LanguageSwitcher />
             </div>
           </div>
@@ -262,7 +257,7 @@ export function Navbar() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed inset-x-0 top-[72px] z-40 bg-card/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden"
+            className="fixed inset-x-0 top-16 z-40 bg-card/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden"
           >
             <div className="px-4 py-4 space-y-1 max-h-[70vh] overflow-y-auto">
               {allLinks.map((link) => (
@@ -280,18 +275,35 @@ export function Navbar() {
                   {t(link.label)}
                 </Link>
               ))}
-              <div className="flex items-center gap-3 px-4 py-3 border-t border-border mt-2">
-                <SocialIcons />
-                <ThemeToggle />
+
+              <div className="border-t border-border mt-2 pt-2 space-y-1">
+                <Link
+                  href="/wishlist"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-foreground/80 hover:bg-muted transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <HiHeart className="h-5 w-5 text-secondary" />
+                    {t("wishlist")}
+                  </span>
+                  {count > 0 && (
+                    <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-secondary px-1.5 text-[11px] font-bold text-white">
+                      {count > 9 ? "9+" : count}
+                    </span>
+                  )}
+                </Link>
+
+                <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-muted transition-colors">
+                  <span className="text-sm font-semibold text-foreground/80">
+                    {t("theme")}
+                  </span>
+                  <ThemeToggle />
+                </div>
+
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <SocialIcons />
+                </div>
               </div>
-              <Link
-                href="/wishlist"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-secondary"
-              >
-                <HiHeart className="h-5 w-5" />
-                {t("wishlist")} {count > 0 && `(${count})`}
-              </Link>
             </div>
           </motion.div>
         )}

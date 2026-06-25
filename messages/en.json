@@ -15,7 +15,8 @@
     "career": "Career",
     "partners": "Partners",
     "horeca": "HoReCa",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "theme": "Theme"
   },
   "hero": {
     "slide1Title": "Discover the Joy of Learning",
@@ -116,7 +117,16 @@
     "material": "Material",
     "rating": "Rating",
     "reviews": "reviews",
-    "off": "off"
+    "off": "off",
+    "orderNow": "Order Now",
+    "whatsappIntro": "Hello! I would like to order this product:",
+    "whatsappProduct": "Product",
+    "whatsappPrice": "Price",
+    "whatsappOriginalPrice": "Original price",
+    "whatsappDescription": "Description",
+    "whatsappAge": "Age",
+    "whatsappSkill": "Skill",
+    "whatsappMaterial": "Material"
   },
   "boys": {
     "title": "Boys Collection",
@@ -184,6 +194,7 @@
     "message": "Message",
     "messagePlaceholder": "Write your message...",
     "send": "Send",
+    "whatsappIntro": "Hello! I'm writing from your website:",
     "success": "Your message has been sent successfully! We'll contact you soon.",
     "map": "Map"
   },

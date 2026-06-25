@@ -21,3 +21,9 @@ export function getDiscountPercent(
   if (!discountPrice || discountPrice >= price) return 0;
   return Math.round(((price - discountPrice) / price) * 100);
 }
+
+export const WHATSAPP_ORDER_NUMBER = "994507174704";
+
+export function buildWhatsAppOrderUrl(message: string): string {
+  return `https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${encodeURIComponent(message)}`;
+}

@@ -489,6 +489,14 @@ export const heroSlides: HeroSlide[] = [
   },
 ];
 
+export function getProductPriceBounds(): { min: number; max: number } {
+  const prices = products.map((p) => p.discountPrice ?? p.price);
+  return {
+    min: Math.min(...prices),
+    max: Math.max(...prices),
+  };
+}
+
 export function getProductById(id: string): Product | undefined {
   return products.find((p) => p.id === id);
 }

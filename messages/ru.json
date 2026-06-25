@@ -15,7 +15,8 @@
     "career": "Карьера",
     "partners": "Партнёры",
     "horeca": "HoReCa",
-    "wishlist": "Избранное"
+    "wishlist": "Избранное",
+    "theme": "Тема"
   },
   "hero": {
     "slide1Title": "Откройте радость обучения",
@@ -116,7 +117,16 @@
     "material": "Материал",
     "rating": "Рейтинг",
     "reviews": "отзывов",
-    "off": "скидка"
+    "off": "скидка",
+    "orderNow": "Заказать",
+    "whatsappIntro": "Здравствуйте! Хочу заказать этот товар:",
+    "whatsappProduct": "Товар",
+    "whatsappPrice": "Цена",
+    "whatsappOriginalPrice": "Старая цена",
+    "whatsappDescription": "Описание",
+    "whatsappAge": "Возраст",
+    "whatsappSkill": "Навык",
+    "whatsappMaterial": "Материал"
   },
   "boys": {
     "title": "Коллекция для мальчиков",
@@ -184,6 +194,7 @@
     "message": "Сообщение",
     "messagePlaceholder": "Напишите сообщение...",
     "send": "Отправить",
+    "whatsappIntro": "Здравствуйте! Пишу с вашего сайта:",
     "success": "Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.",
     "map": "Карта"
   },

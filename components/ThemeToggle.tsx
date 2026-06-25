@@ -17,9 +17,10 @@ export function ThemeToggle() {
       className="rounded-full"
     >
       <motion.div
-        initial={false}
-        animate={{ rotate: theme === "dark" ? 180 : 0 }}
-        transition={{ duration: 0.3 }}
+        key={theme}
+        initial={{ opacity: 0, scale: 0.8, rotate: -30 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ duration: 0.25 }}
       >
         {theme === "dark" ? (
           <HiMoon className="h-5 w-5" />

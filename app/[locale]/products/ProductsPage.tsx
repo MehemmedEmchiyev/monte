@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, type Dispatch, type SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -9,7 +9,8 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { PageTransition } from "@/components/PageTransition";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
+import { cn } from "@/lib/utils";
+import { products, getProductPriceBounds } from "@/data/products";
 import {
   AgeCategory,
   SkillCategory,
@@ -50,6 +51,167 @@ const sortOptions: SortOption[] = [
   "newest",
 ];
 
+const priceBounds = getProductPriceBounds();
+
+function FilterSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-6">
+      <h4 className="font-bold text-sm mb-3">{title}</h4>
+      {children}
+    </div>
+  );
+}
+
+function FilterCheckbox({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <label
+      className={cn(
+        "flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded-lg cursor-pointer transition-colors",
+        checked ? "bg-primary/10" : "hover:bg-muted/60"
+      )}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="h-4 w-4 shrink-0 rounded border-2 border-border accent-primary cursor-pointer"
+      />
+      <span
+        className={cn(
+          "text-sm transition-colors",
+          checked ? "text-primary font-medium" : "text-foreground"
+        )}
+      >
+        {label}
+      </span>
+    </label>
+  );
+}
+
+interface FiltersPanelProps {
+  clearLabel: string;
+  filtersLabel: string;
+  ageLabel: string;
+  skillLabel: string;
+  materialLabel: string;
+  priceLabel: string;
+  hasActiveFilters: boolean;
+  selectedAges: AgeCategory[];
+  selectedSkills: SkillCategory[];
+  selectedMaterials: Material[];
+  priceRange: [number, number];
+  onClear: () => void;
+  onToggleAge: (age: AgeCategory) => void;
+  onToggleSkill: (skill: SkillCategory) => void;
+  onToggleMaterial: (material: Material) => void;
+  onPriceChange: (index: 0 | 1, value: string) => void;
+  tAge: (key: AgeCategory) => string;
+  tSkill: (key: SkillCategory) => string;
+  tMaterials: (key: Material) => string;
+}
+
+function FiltersPanel({
+  clearLabel,
+  filtersLabel,
+  ageLabel,
+  skillLabel,
+  materialLabel,
+  priceLabel,
+  hasActiveFilters,
+  selectedAges,
+  selectedSkills,
+  selectedMaterials,
+  priceRange,
+  onClear,
+  onToggleAge,
+  onToggleSkill,
+  onToggleMaterial,
+  onPriceChange,
+  tAge,
+  tSkill,
+  tMaterials,
+}: FiltersPanelProps) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-bold text-lg">{filtersLabel}</h3>
+        <Button variant="ghost" size="sm" onClick={onClear} disabled={!hasActiveFilters}>
+          {clearLabel}
+        </Button>
+      </div>
+
+      <FilterSection title={ageLabel}>
+        {ageCategories.map((age) => (
+          <FilterCheckbox
+            key={age}
+            label={tAge(age)}
+            checked={selectedAges.includes(age)}
+            onChange={() => onToggleAge(age)}
+          />
+        ))}
+      </FilterSection>
+
+      <FilterSection title={skillLabel}>
+        {skillCategories.map((skill) => (
+          <FilterCheckbox
+            key={skill}
+            label={tSkill(skill)}
+            checked={selectedSkills.includes(skill)}
+            onChange={() => onToggleSkill(skill)}
+          />
+        ))}
+      </FilterSection>
+
+      <FilterSection title={materialLabel}>
+        {materials.map((mat) => (
+          <FilterCheckbox
+            key={mat}
+            label={tMaterials(mat)}
+            checked={selectedMaterials.includes(mat)}
+            onChange={() => onToggleMaterial(mat)}
+          />
+        ))}
+      </FilterSection>
+
+      <FilterSection title={priceLabel}>
+        <div className="flex items-center gap-3">
+          <Input
+            type="number"
+            value={priceRange[0]}
+            onChange={(e) => onPriceChange(0, e.target.value)}
+            className="w-full"
+            min={priceBounds.min}
+            max={priceBounds.max}
+          />
+          <span className="text-muted-foreground">—</span>
+          <Input
+            type="number"
+            value={priceRange[1]}
+            onChange={(e) => onPriceChange(1, e.target.value)}
+            className="w-full"
+            min={priceBounds.min}
+            max={priceBounds.max}
+          />
+        </div>
+      </FilterSection>
+    </div>
+  );
+}
+
 interface ProductsPageProps {
   genderFilter?: "boys" | "girls";
   hideHeader?: boolean;
@@ -63,27 +225,43 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
   const tSort = useTranslations("sort");
   const searchParams = useSearchParams();
 
+  const skillParam = searchParams.get("skill");
+  const materialParam = searchParams.get("material");
+  const filterParam = searchParams.get("filter");
+
   const [search, setSearch] = useState("");
   const [selectedAges, setSelectedAges] = useState<AgeCategory[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<SkillCategory[]>([]);
   const [selectedMaterials, setSelectedMaterials] = useState<Material[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 250]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    priceBounds.min,
+    priceBounds.max,
+  ]);
   const [sort, setSort] = useState<SortOption>("newest");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
-
-  const skillParam = searchParams.get("skill");
-  const initialSkill = skillParam as SkillCategory | null;
+  const [onlyNew, setOnlyNew] = useState(false);
 
   useEffect(() => {
-    if (initialSkill && skillCategories.includes(initialSkill)) {
-      setSelectedSkills([initialSkill]);
+    if (skillParam && skillCategories.includes(skillParam as SkillCategory)) {
+      setSelectedSkills([skillParam as SkillCategory]);
     }
-  }, [initialSkill]);
+    if (materialParam && materials.includes(materialParam as Material)) {
+      setSelectedMaterials([materialParam as Material]);
+    }
+    if (filterParam === "new") {
+      setOnlyNew(true);
+    }
+  }, [skillParam, materialParam, filterParam]);
 
-  const toggleFilter = <T,>(item: T, list: T[], setter: (v: T[]) => void) => {
-    setter(
-      list.includes(item) ? list.filter((i) => i !== item) : [...list, item]
+  const toggleFilter = <T,>(
+    item: T,
+    setter: Dispatch<SetStateAction<T[]>>
+  ) => {
+    setter((current) =>
+      current.includes(item)
+        ? current.filter((i) => i !== item)
+        : [...current, item]
     );
   };
 
@@ -92,11 +270,31 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
     setSelectedAges([]);
     setSelectedSkills([]);
     setSelectedMaterials([]);
-    setPriceRange([0, 250]);
+    setPriceRange([priceBounds.min, priceBounds.max]);
     setSort("newest");
+    setOnlyNew(false);
+  };
+
+  const updatePriceBound = (index: 0 | 1, rawValue: string) => {
+    const parsed = rawValue === "" ? null : Number(rawValue);
+    setPriceRange((current) => {
+      const next: [number, number] = [...current] as [number, number];
+      next[index] =
+        parsed === null || Number.isNaN(parsed)
+          ? index === 0
+            ? priceBounds.min
+            : priceBounds.max
+          : parsed;
+      return next;
+    });
   };
 
   const filteredProducts = useMemo(() => {
+    const [minPrice, maxPrice] = [
+      Math.min(priceRange[0], priceRange[1]),
+      Math.max(priceRange[0], priceRange[1]),
+    ];
+
     let result: Product[] = [...products];
 
     if (genderFilter) {
@@ -105,8 +303,12 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
       );
     }
 
-    if (search) {
-      const q = search.toLowerCase();
+    if (onlyNew) {
+      result = result.filter((p) => p.isNew);
+    }
+
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
       result = result.filter(
         (p) =>
           p.title.toLowerCase().includes(q) ||
@@ -114,21 +316,21 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
       );
     }
 
-    if (selectedAges.length) {
+    if (selectedAges.length > 0) {
       result = result.filter((p) => selectedAges.includes(p.ageCategory));
     }
 
-    if (selectedSkills.length) {
+    if (selectedSkills.length > 0) {
       result = result.filter((p) => selectedSkills.includes(p.skillCategory));
     }
 
-    if (selectedMaterials.length) {
+    if (selectedMaterials.length > 0) {
       result = result.filter((p) => selectedMaterials.includes(p.material));
     }
 
     result = result.filter((p) => {
       const price = p.discountPrice ?? p.price;
-      return price >= priceRange[0] && price <= priceRange[1];
+      return price >= minPrice && price <= maxPrice;
     });
 
     switch (sort) {
@@ -155,6 +357,7 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
     return result;
   }, [
     genderFilter,
+    onlyNew,
     search,
     selectedAges,
     selectedSkills,
@@ -163,114 +366,46 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
     sort,
   ]);
 
-  const FilterSection = ({
-    title,
-    children,
-  }: {
-    title: string;
-    children: React.ReactNode;
-  }) => (
-    <div className="mb-6">
-      <h4 className="font-bold text-sm mb-3">{title}</h4>
-      {children}
-    </div>
-  );
+  const hasActiveFilters =
+    Boolean(search.trim()) ||
+    selectedAges.length > 0 ||
+    selectedSkills.length > 0 ||
+    selectedMaterials.length > 0 ||
+    onlyNew ||
+    priceRange[0] !== priceBounds.min ||
+    priceRange[1] !== priceBounds.max;
 
-  const FilterCheckbox = ({
-    label,
-    checked,
-    onChange,
-  }: {
-    label: string;
-    checked: boolean;
-    onChange: () => void;
-  }) => (
-    <label className="flex items-center gap-2 py-1.5 cursor-pointer group">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-      />
-      <span className="text-sm group-hover:text-primary transition-colors">
-        {label}
-      </span>
-    </label>
-  );
+  const filterKey = [
+    selectedAges.join(","),
+    selectedSkills.join(","),
+    selectedMaterials.join(","),
+    search,
+    onlyNew,
+    priceRange.join(","),
+    sort,
+  ].join("|");
 
-  const filtersPanel = (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-lg">{t("filters")}</h3>
-        <Button variant="ghost" size="sm" onClick={clearFilters}>
-          {t("clearFilters")}
-        </Button>
-      </div>
-
-      <FilterSection title={t("ageCategory")}>
-        {ageCategories.map((age) => (
-          <FilterCheckbox
-            key={age}
-            label={tAge(age)}
-            checked={selectedAges.includes(age)}
-            onChange={() =>
-              toggleFilter(age, selectedAges, setSelectedAges)
-            }
-          />
-        ))}
-      </FilterSection>
-
-      <FilterSection title={t("skillCategory")}>
-        {skillCategories.map((skill) => (
-          <FilterCheckbox
-            key={skill}
-            label={tSkill(skill)}
-            checked={selectedSkills.includes(skill)}
-            onChange={() =>
-              toggleFilter(skill, selectedSkills, setSelectedSkills)
-            }
-          />
-        ))}
-      </FilterSection>
-
-      <FilterSection title={t("material")}>
-        {materials.map((mat) => (
-          <FilterCheckbox
-            key={mat}
-            label={tMaterials(mat)}
-            checked={selectedMaterials.includes(mat)}
-            onChange={() =>
-              toggleFilter(mat, selectedMaterials, setSelectedMaterials)
-            }
-          />
-        ))}
-      </FilterSection>
-
-      <FilterSection title={t("priceRange")}>
-        <div className="flex items-center gap-3">
-          <Input
-            type="number"
-            value={priceRange[0]}
-            onChange={(e) =>
-              setPriceRange([Number(e.target.value), priceRange[1]])
-            }
-            className="w-full"
-            min={0}
-          />
-          <span className="text-muted-foreground">—</span>
-          <Input
-            type="number"
-            value={priceRange[1]}
-            onChange={(e) =>
-              setPriceRange([priceRange[0], Number(e.target.value)])
-            }
-            className="w-full"
-            min={0}
-          />
-        </div>
-      </FilterSection>
-    </div>
-  );
+  const filtersPanelProps: FiltersPanelProps = {
+    clearLabel: t("clearFilters"),
+    filtersLabel: t("filters"),
+    ageLabel: t("ageCategory"),
+    skillLabel: t("skillCategory"),
+    materialLabel: t("material"),
+    priceLabel: t("priceRange"),
+    hasActiveFilters,
+    selectedAges,
+    selectedSkills,
+    selectedMaterials,
+    priceRange,
+    onClear: clearFilters,
+    onToggleAge: (age) => toggleFilter(age, setSelectedAges),
+    onToggleSkill: (skill) => toggleFilter(skill, setSelectedSkills),
+    onToggleMaterial: (material) => toggleFilter(material, setSelectedMaterials),
+    onPriceChange: updatePriceBound,
+    tAge,
+    tSkill,
+    tMaterials,
+  };
 
   const content = (
     <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-8">
@@ -281,7 +416,7 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="hidden lg:block w-72 shrink-0">
             <div className="sticky top-24 rounded-2xl border border-border bg-card p-6">
-              {filtersPanel}
+              <FiltersPanel {...filtersPanelProps} />
             </div>
           </aside>
 
@@ -345,7 +480,7 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
                 animate={{ opacity: 1, height: "auto" }}
                 className="lg:hidden rounded-2xl border border-border bg-card p-6 mb-6"
               >
-                {filtersPanel}
+                <FiltersPanel {...filtersPanelProps} />
               </motion.div>
             )}
 
@@ -361,7 +496,11 @@ export default function ProductsPage({ genderFilter, hideHeader }: ProductsPageP
                 </Button>
               </div>
             ) : (
-              <ProductGrid products={filteredProducts} view={view} />
+              <ProductGrid
+                key={filterKey}
+                products={filteredProducts}
+                view={view}
+              />
             )}
           </div>
         </div>

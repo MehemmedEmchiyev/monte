@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Product } from "@/types";
-import { formatPrice, getDiscountPercent } from "@/lib/utils";
+import { formatPrice, getDiscountPercent, buildWhatsAppOrderUrl } from "@/lib/utils";
 import { ProductGrid } from "@/components/ProductGrid";
 import { PageTransition } from "@/components/PageTransition";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import {
   HiAcademicCap,
   HiHeart,
 } from "react-icons/hi2";
+import { FaWhatsapp } from "react-icons/fa";
 import { useWishlist } from "@/hooks/useWishlist";
 import { cn } from "@/lib/utils";
 
@@ -32,12 +33,33 @@ export default function ProductDetail({
   const tSkill = useTranslations("skill");
   const tMaterials = useTranslations("materials");
   const tProducts = useTranslations("products");
+  const locale = useLocale();
   const { isInWishlist, toggleWishlist } = useWishlist();
 
   const images = product.images ?? [product.image];
   const [activeImage, setActiveImage] = useState(0);
   const discount = getDiscountPercent(product.price, product.discountPrice);
   const displayPrice = product.discountPrice ?? product.price;
+  const priceLocale =
+    locale === "en" ? "en-US" : locale === "ru" ? "ru-RU" : "az-AZ";
+
+  const whatsappOrderUrl = buildWhatsAppOrderUrl(
+    [
+      t("whatsappIntro"),
+      "",
+      `${t("whatsappProduct")}: ${product.title}`,
+      `${t("whatsappPrice")}: ${formatPrice(displayPrice, priceLocale)}`,
+      ...(product.discountPrice
+        ? [
+            `${t("whatsappOriginalPrice")}: ${formatPrice(product.price, priceLocale)}`,
+          ]
+        : []),
+      `${t("whatsappDescription")}: ${product.description}`,
+      `${t("whatsappAge")}: ${tAge(product.ageCategory)}`,
+      `${t("whatsappSkill")}: ${tSkill(product.skillCategory)}`,
+      `${t("whatsappMaterial")}: ${tMaterials(product.material)}`,
+    ].join("\n")
+  );
 
   return (
     <PageTransition>
@@ -143,7 +165,16 @@ export default function ProductDetail({
                 </Badge>
               </div>
 
-              <div className="flex gap-3 mt-8">
+              <div className="flex flex-wrap gap-3 mt-8">
+                <a
+                  href={whatsappOrderUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-12 items-center gap-2 rounded-xl px-6 font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-all"
+                >
+                  <FaWhatsapp className="h-5 w-5" />
+                  {t("orderNow")}
+                </a>
                 <button
                   onClick={() => toggleWishlist(product.id)}
                   className={cn(
